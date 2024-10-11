@@ -3,6 +3,7 @@ import { userInfo } from 'os';
 import { logging } from './modules/moduleGreetingAndFarewell.js';
 import { showFolderContent } from './modules/moduleShowFolderContent.js';
 import { invalidError } from './modules/moduleError.js';
+import { operationWithFile } from './modules/moduleOperationWithFile.js';
 
 const name =
   process.argv[2]?.slice(11) || process.env.npm_config_username || 'Anonyms';
@@ -25,6 +26,7 @@ process.stdin.on('data', (data) => {
     case 'cd':
       if (command.length === 2) {
         invalidError();
+        userPath.showPath();
       } else {
         userPath.setPath(command.slice(3));
       }
@@ -33,12 +35,20 @@ process.stdin.on('data', (data) => {
       showFolderContent(userPath.getPath());
       break;
     case 'cat':
-      showFolderContent(userPath.getPath());
-      userPath.showPath();
+      if (command.length === 3) {
+        invalidError();
+        userPath.showPath();
+      } else {
+        operationWithFile.cat(command.slice(4));
+      }
       break;
     case 'add':
-      showFolderContent(userPath.getPath());
-      userPath.showPath();
+      if (command.length === 3) {
+        invalidError();
+        userPath.showPath();
+      } else {
+        operationWithFile.add(command.slice(4));
+      }
       break;
     case 'rn':
       showFolderContent(userPath.getPath());
