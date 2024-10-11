@@ -1,4 +1,6 @@
 import { join, parse, isAbsolute } from 'path';
+import { access } from 'fs/promises';
+import { operationError } from './moduleError.js';
 
 class WorkWithPath {
   #currentPath = '';
@@ -12,12 +14,17 @@ class WorkWithPath {
     return this.#currentPath;
   }
 
-  setPath(path) {
-    if (isAbsolute(path)) {
-      this.#currentPath = path;
-      this.setRootPath();
-    } else {
-      this.#currentPath = join(this.#currentPath, path);
+  async setPath(path) {
+    try {
+      await access(path);
+      if (isAbsolute(path)) {
+        this.#currentPath = path;
+        this.setRootPath();
+      } else {
+        this.#currentPath = join(this.#currentPath, path);
+      }
+    } catch {
+      operationError();
     }
     this.showPath();
   }

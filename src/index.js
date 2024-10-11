@@ -14,8 +14,8 @@ logging.greeting(printName);
 userPath.setPath(userInfo().homedir);
 
 process.stdin.on('data', (data) => {
-  const command = data.toString().trim().split(' ');
-  switch (command[0]) {
+  const command = data.toString().trim();
+  switch (command.split(' ')[0]) {
     case '.exit':
       process.exit();
       break;
@@ -23,7 +23,11 @@ process.stdin.on('data', (data) => {
       userPath.upPath();
       break;
     case 'cd':
-      userPath.setRootPath(command[1]);
+      if (command.length === 2) {
+        invalidError();
+      } else {
+        userPath.setPath(command.slice(3));
+      }
       break;
     case 'ls':
       showFolderContent(userPath.getPath());
