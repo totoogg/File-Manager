@@ -6,6 +6,7 @@ import { invalidError } from './modules/moduleError.js';
 import { operationWithFile } from './modules/moduleOperationWithFile.js';
 import { userOS } from './modules/moduleOS.js';
 import { userHash } from './modules/moduleHash.js';
+import { userZip } from './modules/moduleZip.js';
 
 const name =
   process.argv[2]?.slice(11) || process.env.npm_config_username || 'Anonyms';
@@ -101,10 +102,20 @@ process.stdin.on('data', (data) => {
       }
       break;
     case 'compress':
-      //
+      if (command.length === 8) {
+        invalidError();
+        userPath.showPath();
+      } else {
+        userZip(command.slice(9), 'compress');
+      }
       break;
     case 'decompress':
-      //
+      if (command.length === 10) {
+        invalidError();
+        userPath.showPath();
+      } else {
+        userZip(command.slice(11), 'decompress');
+      }
       break;
     default:
       invalidError();
