@@ -151,7 +151,7 @@ class OperationWithFile {
         return;
       }
       const arrPathWithSpace = path
-        .match(/((["]).*?\2)/gi)
+        .match(/((["']).*?\2)/gi)
         .map((el) => el.slice(1, -1))
         .map((el) => el.trim());
       result = [...arrPathWithSpace];
