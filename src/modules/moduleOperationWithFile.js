@@ -109,6 +109,25 @@ class OperationWithFile {
     }
   }
 
+  async rm(path) {
+    let needPath = path.trim();
+    if (!isAbsolute(needPath)) {
+      needPath = join(userPath.getPath(), path);
+    }
+    try {
+      await access(needPath);
+      const stat = await lstat(needPath);
+      if (stat.isFile()) {
+        await rm(needPath);
+      } else {
+        throw new Error('Need file');
+      }
+    } catch (e) {
+      operationError();
+    }
+    userPath.showPath();
+  }
+
   getPathWithSpace(path) {
     const arrPath = path.split(' ').filter((el) => el.trim());
     let result = [...arrPath];
