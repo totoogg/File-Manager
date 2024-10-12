@@ -4,6 +4,7 @@ import { logging } from './modules/moduleGreetingAndFarewell.js';
 import { showFolderContent } from './modules/moduleShowFolderContent.js';
 import { invalidError } from './modules/moduleError.js';
 import { operationWithFile } from './modules/moduleOperationWithFile.js';
+import { userOS } from './modules/moduleOS.js';
 
 const name =
   process.argv[2]?.slice(11) || process.env.npm_config_username || 'Anonyms';
@@ -83,20 +84,21 @@ process.stdin.on('data', (data) => {
       }
       break;
     case 'os':
-      showFolderContent(userPath.getPath());
-      userPath.showPath();
+      if (command.length === 2) {
+        invalidError();
+        userPath.showPath();
+      } else {
+        userOS(command.slice(3));
+      }
       break;
     case 'hash':
-      showFolderContent(userPath.getPath());
-      userPath.showPath();
+      //
       break;
     case 'compress':
-      showFolderContent(userPath.getPath());
-      userPath.showPath();
+      //
       break;
     case 'decompress':
-      showFolderContent(userPath.getPath());
-      userPath.showPath();
+      //
       break;
     default:
       invalidError();
