@@ -67,8 +67,12 @@ process.stdin.on('data', (data) => {
       }
       break;
     case 'mv':
-      showFolderContent(userPath.getPath());
-      userPath.showPath();
+      if (command.length === 2) {
+        invalidError();
+        userPath.showPath();
+      } else {
+        operationWithFile.mv(command.slice(3));
+      }
       break;
     case 'rm':
       showFolderContent(userPath.getPath());

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { access, writeFile, lstat, rename } from 'fs/promises';
+import { access, writeFile, lstat, rename, rm } from 'fs/promises';
 import { join, parse, isAbsolute } from 'path';
 import { pipeline } from 'stream/promises';
 import { operationError, invalidError } from './moduleError.js';
@@ -66,7 +66,7 @@ class OperationWithFile {
     }
   }
 
-  async cp(path) {
+  async cp(path, show = true) {
     let arrPath = path.split(' ').filter((el) => el);
     arrPath = this.getPathWithSpace(path);
     if (arrPath) {
@@ -86,12 +86,25 @@ class OperationWithFile {
             fs.createReadStream(arrPath[0], 'utf-8'),
             fs.createWriteStream(join(arrPath[1], nameFile))
           );
+          if (!show) {
+            return arrPath[0];
+          }
         } else {
           throw new Error('Need file');
         }
       } catch (e) {
         operationError();
       }
+      if (show) {
+        userPath.showPath();
+      }
+    }
+  }
+
+  async mv(path) {
+    const cp = await this.cp(path, false);
+    if (cp) {
+      await rm(cp);
       userPath.showPath();
     }
   }
