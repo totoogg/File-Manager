@@ -1,4 +1,4 @@
-import { platform, arch, cpus } from 'os';
+import { platform, arch, cpus, userInfo } from 'os';
 import { invalidError, operationError } from './moduleError.js';
 import { userPath } from './modulePath.js';
 
@@ -27,6 +27,7 @@ export function userOS(command) {
       infoCpus();
       break;
     case 'homedir':
+      console.log(userInfo().homedir);
       break;
     case 'username':
       break;
