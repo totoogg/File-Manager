@@ -5,6 +5,7 @@ import { showFolderContent } from './modules/moduleShowFolderContent.js';
 import { invalidError } from './modules/moduleError.js';
 import { operationWithFile } from './modules/moduleOperationWithFile.js';
 import { userOS } from './modules/moduleOS.js';
+import { userHash } from './modules/moduleHash.js';
 
 const name =
   process.argv[2]?.slice(11) || process.env.npm_config_username || 'Anonyms';
@@ -92,7 +93,12 @@ process.stdin.on('data', (data) => {
       }
       break;
     case 'hash':
-      //
+      if (command.length === 4) {
+        invalidError();
+        userPath.showPath();
+      } else {
+        userHash(command.slice(5));
+      }
       break;
     case 'compress':
       //
