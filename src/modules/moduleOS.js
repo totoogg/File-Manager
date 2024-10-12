@@ -1,5 +1,5 @@
 import { platform, arch, cpus, userInfo } from 'os';
-import { invalidError, operationError } from './moduleError.js';
+import { invalidError } from './moduleError.js';
 import { userPath } from './modulePath.js';
 
 function infoCpus() {
@@ -33,6 +33,7 @@ export function userOS(command) {
       console.log(userInfo().username);
       break;
     case 'architecture':
+      console.log(arch());
       break;
     default:
       invalidError();
