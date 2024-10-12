@@ -1,12 +1,13 @@
 import fs from 'fs';
 import { access, writeFile, lstat, rename } from 'fs/promises';
 import { join, parse, isAbsolute } from 'path';
+import { pipeline } from 'stream/promises';
 import { operationError, invalidError } from './moduleError.js';
 import { userPath } from './modulePath.js';
 
 class OperationWithFile {
   async cat(path) {
-    let needPath = path;
+    let needPath = path.trim();
     if (!isAbsolute(needPath)) {
       needPath = join(userPath.getPath(), path);
     }
@@ -34,7 +35,7 @@ class OperationWithFile {
 
   async add(path) {
     try {
-      const pathNewFile = join(userPath.getPath(), path);
+      const pathNewFile = join(userPath.getPath(), path.trim());
       await writeFile(pathNewFile, '');
     } catch (e) {
       operationError();
@@ -65,8 +66,38 @@ class OperationWithFile {
     }
   }
 
+  async cp(path) {
+    let arrPath = path.split(' ').filter((el) => el);
+    arrPath = this.getPathWithSpace(path);
+    if (arrPath) {
+      arrPath = [...arrPath].map((el) => {
+        if (!isAbsolute(el)) {
+          return join(userPath.getPath(), el);
+        }
+        return el;
+      });
+      try {
+        await access(arrPath[0]);
+        await access(arrPath[1]);
+        const stat = await lstat(arrPath[0]);
+        if (stat.isFile()) {
+          const nameFile = parse(arrPath[0]).base;
+          await pipeline(
+            fs.createReadStream(arrPath[0], 'utf-8'),
+            fs.createWriteStream(join(arrPath[1], nameFile))
+          );
+        } else {
+          throw new Error('Need file');
+        }
+      } catch (e) {
+        operationError();
+      }
+      userPath.showPath();
+    }
+  }
+
   getPathWithSpace(path) {
-    const arrPath = path.split(' ').filter((el) => el);
+    const arrPath = path.split(' ').filter((el) => el.trim());
     let result = [...arrPath];
     if (arrPath.length > 2 && !path.includes('"')) {
       console.error(

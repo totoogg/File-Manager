@@ -15,17 +15,18 @@ class WorkWithPath {
   }
 
   async setPath(path) {
-    if (isAbsolute(path)) {
+    const needPath = path.trim();
+    if (isAbsolute(needPath)) {
       try {
-        await access(path);
-        this.#currentPath = path;
+        await access(needPath);
+        this.#currentPath = needPath;
         this.setRootPath();
       } catch {
         operationError();
       }
     } else {
       try {
-        const absolutePath = join(this.#currentPath, path);
+        const absolutePath = join(this.#currentPath, needPath);
         await access(absolutePath);
         this.#currentPath = absolutePath;
       } catch {
