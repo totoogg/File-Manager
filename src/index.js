@@ -102,6 +102,7 @@ process.stdin.on('data', (data) => {
       break;
     default:
       invalidError();
+      userPath.showPath();
       break;
   }
 });

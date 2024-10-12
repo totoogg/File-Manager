@@ -30,6 +30,7 @@ export function userOS(command) {
       console.log(userInfo().homedir);
       break;
     case 'username':
+      console.log(userInfo().username);
       break;
     case 'architecture':
       break;
