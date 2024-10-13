@@ -34,11 +34,16 @@ class OperationWithFile {
   }
 
   async add(path) {
+    const pathNewFile = join(userPath.getPath(), path.trim());
     try {
-      const pathNewFile = join(userPath.getPath(), path.trim());
-      await writeFile(pathNewFile, '');
+      await access(pathNewFile);
+      throw new Error('file exists');
     } catch (e) {
-      operationError();
+      if (e.message !== 'file exists') {
+        await writeFile(pathNewFile, '');
+      } else {
+        operationError();
+      }
     }
     userPath.showPath();
   }
